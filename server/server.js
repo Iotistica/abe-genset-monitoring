@@ -63,7 +63,7 @@ app.get('/health', (req, res) => {
 
 // Serve OpenAPI documentation
 app.get('/api-docs', (req, res) => {
-  const openApiPath = path.join(__dirname, '../src/opneapi/comap.json');
+  const openApiPath = path.join(__dirname, 'comap.json');
   if (fs.existsSync(openApiPath)) {
     res.sendFile(openApiPath);
   } else {
