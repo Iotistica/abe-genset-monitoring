@@ -1845,19 +1845,30 @@ function generateMockAlarms() {
     const statuses = ['active', 'acknowledged', 'cleared'];
     const alarms = [];
     
+    // Fallback unit names if allUnits is empty
+    const defaultUnits = ['GenSet-001', 'GenSet-002', 'GenSet-003', 'GenSet-004'];
+    
     // Generate 5-15 random alarms
     const alarmCount = Math.floor(Math.random() * 10) + 5;
     
     for (let i = 0; i < alarmCount; i++) {
         const alarm = comapAlarmCodes[Math.floor(Math.random() * comapAlarmCodes.length)];
-        const unit = allUnits[Math.floor(Math.random() * Math.min(allUnits.length, 3))] || { name: 'GenSet-001' };
+        
+        let unitName;
+        if (allUnits.length > 0) {
+            const unit = allUnits[Math.floor(Math.random() * Math.min(allUnits.length, 3))];
+            unitName = unit.name;
+        } else {
+            unitName = defaultUnits[Math.floor(Math.random() * defaultUnits.length)];
+        }
+        
         const hoursAgo = Math.floor(Math.random() * 72);
         const timestamp = new Date(Date.now() - hoursAgo * 3600000);
         
         alarms.push({
             id: `alarm-${Date.now()}-${i}`,
             severity: alarm.severity,
-            unit: unit.name,
+            unit: unitName,
             code: alarm.code,
             description: alarm.description,
             timestamp: timestamp.toISOString(),
