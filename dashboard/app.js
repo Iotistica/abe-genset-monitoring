@@ -1720,4 +1720,33 @@ function setupChartExport() {
     }
 }
 
+// Mobile menu toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            navMenu.classList.toggle('mobile-open');
+        });
+        
+        // Close menu when clicking a nav item
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('mobile-open');
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                mobileMenuToggle.classList.remove('active');
+                navMenu.classList.remove('mobile-open');
+            }
+        });
+    }
+});
+
 
