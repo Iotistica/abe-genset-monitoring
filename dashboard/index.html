@@ -46,6 +46,10 @@
                     <span class="nav-icon"></span>
                     <span>Management</span>
                 </div>
+                <div class="nav-item" id="alarms-nav" data-section="alarms">
+                    <span class="nav-icon">🔔</span>
+                    <span class="translate" data-key="alarms">Alarms</span>
+                </div>
                 <div class="nav-item" id="architecture-nav" data-section="architecture">
                     <span class="nav-icon"></span>
                     <span>Architecture</span>
@@ -609,6 +613,87 @@
                         <button class="btn-primary" id="save-unit-btn">Save Changes</button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Alarms Section -->
+        <div id="alarms-section" class="page-section">
+            <div class="page-header">
+                <h1 class="translate" data-key="alarms">Alarms</h1>
+                <p class="header-subtitle translate" data-key="alarmsSubtitle">GenSet Controller Alerts</p>
+            </div>
+            
+            <div class="alarms-controls">
+                <div class="filters">
+                    <select id="alarm-severity-filter">
+                        <option value="">All Severities</option>
+                        <option value="critical">Critical</option>
+                        <option value="warning">Warning</option>
+                        <option value="info">Info</option>
+                    </select>
+                    <select id="alarm-status-filter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="acknowledged">Acknowledged</option>
+                        <option value="cleared">Cleared</option>
+                    </select>
+                    <input type="text" id="alarm-search" placeholder="Search alarms..." />
+                </div>
+                <button class="btn-primary" id="clear-all-alarms-btn">
+                    <span>🔕</span> Clear All
+                </button>
+            </div>
+
+            <div class="alarms-summary">
+                <div class="alarm-stat critical">
+                    <div class="alarm-stat-icon">⚠️</div>
+                    <div class="alarm-stat-content">
+                        <div class="alarm-stat-value" id="critical-alarms-count">0</div>
+                        <div class="alarm-stat-label">Critical</div>
+                    </div>
+                </div>
+                <div class="alarm-stat warning">
+                    <div class="alarm-stat-icon">⚡</div>
+                    <div class="alarm-stat-content">
+                        <div class="alarm-stat-value" id="warning-alarms-count">0</div>
+                        <div class="alarm-stat-label">Warning</div>
+                    </div>
+                </div>
+                <div class="alarm-stat info">
+                    <div class="alarm-stat-icon">ℹ️</div>
+                    <div class="alarm-stat-content">
+                        <div class="alarm-stat-value" id="info-alarms-count">0</div>
+                        <div class="alarm-stat-label">Info</div>
+                    </div>
+                </div>
+                <div class="alarm-stat total">
+                    <div class="alarm-stat-icon">📊</div>
+                    <div class="alarm-stat-content">
+                        <div class="alarm-stat-value" id="total-alarms-count">0</div>
+                        <div class="alarm-stat-label">Total Active</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alarms-table-container">
+                <table class="alarms-table">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Unit</th>
+                            <th>Alarm Code</th>
+                            <th>Description</th>
+                            <th>Timestamp</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alarms-table-body">
+                        <tr>
+                            <td colspan="7" class="loading">Loading alarms...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

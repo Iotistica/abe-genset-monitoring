@@ -1776,3 +1776,215 @@ canvas {
         font-size: 13px;
     }
 }
+
+/* Alarms Section */
+.alarms-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+.alarms-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.alarm-stat {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-left: 4px solid;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.alarm-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.alarm-stat.critical {
+    border-left-color: #ef4444;
+}
+
+.alarm-stat.warning {
+    border-left-color: #f59e0b;
+}
+
+.alarm-stat.info {
+    border-left-color: #3b82f6;
+}
+
+.alarm-stat.total {
+    border-left-color: #8b5cf6;
+}
+
+.alarm-stat-icon {
+    font-size: 32px;
+}
+
+.alarm-stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.alarm-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.alarm-stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.alarms-table-container {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.alarms-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.alarms-table thead {
+    background: var(--bg-tertiary);
+}
+
+.alarms-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.alarms-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.alarms-table tbody tr:hover {
+    background: var(--bg-tertiary);
+}
+
+.alarms-table tbody tr.critical {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.alarms-table tbody tr.warning {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.alarms-table tbody tr.info {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.alarm-severity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.alarm-severity-badge.critical {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.alarm-severity-badge.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.alarm-severity-badge.info {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.alarm-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.alarm-status-badge.active {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.alarm-status-badge.acknowledged {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.alarm-status-badge.cleared {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.alarm-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.alarm-action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.alarm-action-btn:hover {
+    background: var(--accent-primary);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .alarms-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .alarms-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .alarms-table-container {
+        overflow-x: auto;
+    }
+    
+    .alarms-table {
+        min-width: 800px;
+    }
+}
+

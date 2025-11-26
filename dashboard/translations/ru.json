@@ -18,6 +18,7 @@
   "totalUnits": "Всего установок",
   "totalPower": "Общая мощность",
   "alarms": "Тревоги",
+  "alarmsSubtitle": "Оповещения контроллеров GenSet",
   "loadingUnits": "Загрузка установок...",
   "noUnits": "Установки не найдены",
   "unitDetails": "Детали установки",

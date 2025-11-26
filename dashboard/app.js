@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupNavigation();
     setupManagementTabs();
     setupManagementModals();
+    setupAlarms();
     
     // Auto-refresh every 5 seconds
     setInterval(() => {
@@ -1748,5 +1749,199 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Alarms functionality
+let allAlarms = [];
+
+function setupAlarms() {
+    loadAlarms();
+    setupAlarmFilters();
+    
+    // Auto-refresh alarms every 10 seconds
+    setInterval(() => {
+        loadAlarms(true);
+    }, 10000);
+}
+
+async function loadAlarms(silent = false) {
+    if (!silent) {
+        document.getElementById('alarms-table-body').innerHTML = '<tr><td colspan="7" class="loading">Loading alarms...</td></tr>';
+    }
+    
+    // Generate mock alarm data from COMAP controller codes
+    // In production, this would fetch from the API endpoint
+    allAlarms = generateMockAlarms();
+    
+    updateAlarmStats();
+    displayAlarms(allAlarms);
+}
+
+function generateMockAlarms() {
+    const comapAlarmCodes = [
+        { code: 'E001', description: 'Emergency Stop Activated', severity: 'critical' },
+        { code: 'E002', description: 'Low Oil Pressure', severity: 'critical' },
+        { code: 'E003', description: 'High Engine Temperature', severity: 'critical' },
+        { code: 'E004', description: 'Overspeed Detected', severity: 'critical' },
+        { code: 'W001', description: 'Low Coolant Level', severity: 'warning' },
+        { code: 'W002', description: 'Battery Voltage Low', severity: 'warning' },
+        { code: 'W003', description: 'High Fuel Consumption', severity: 'warning' },
+        { code: 'W004', description: 'Air Filter Maintenance Due', severity: 'warning' },
+        { code: 'I001', description: 'Maintenance Schedule Reminder', severity: 'info' },
+        { code: 'I002', description: 'Generator Started', severity: 'info' },
+        { code: 'I003', description: 'Load Transfer Complete', severity: 'info' }
+    ];
+    
+    const statuses = ['active', 'acknowledged', 'cleared'];
+    const alarms = [];
+    
+    // Generate 5-15 random alarms
+    const alarmCount = Math.floor(Math.random() * 10) + 5;
+    
+    for (let i = 0; i < alarmCount; i++) {
+        const alarm = comapAlarmCodes[Math.floor(Math.random() * comapAlarmCodes.length)];
+        const unit = allUnits[Math.floor(Math.random() * Math.min(allUnits.length, 3))] || { name: 'GenSet-001' };
+        const hoursAgo = Math.floor(Math.random() * 72);
+        const timestamp = new Date(Date.now() - hoursAgo * 3600000);
+        
+        alarms.push({
+            id: `alarm-${Date.now()}-${i}`,
+            severity: alarm.severity,
+            unit: unit.name,
+            code: alarm.code,
+            description: alarm.description,
+            timestamp: timestamp.toISOString(),
+            status: hoursAgo < 2 ? 'active' : statuses[Math.floor(Math.random() * statuses.length)]
+        });
+    }
+    
+    return alarms.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+function updateAlarmStats() {
+    const critical = allAlarms.filter(a => a.severity === 'critical' && a.status === 'active').length;
+    const warning = allAlarms.filter(a => a.severity === 'warning' && a.status === 'active').length;
+    const info = allAlarms.filter(a => a.severity === 'info' && a.status === 'active').length;
+    const total = critical + warning + info;
+    
+    document.getElementById('critical-alarms-count').textContent = critical;
+    document.getElementById('warning-alarms-count').textContent = warning;
+    document.getElementById('info-alarms-count').textContent = info;
+    document.getElementById('total-alarms-count').textContent = total;
+}
+
+function displayAlarms(alarms) {
+    const tbody = document.getElementById('alarms-table-body');
+    
+    if (alarms.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">No alarms found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = alarms.map(alarm => `
+        <tr class="${alarm.severity}">
+            <td>
+                <span class="alarm-severity-badge ${alarm.severity}">
+                    ${alarm.severity === 'critical' ? '⚠️' : alarm.severity === 'warning' ? '⚡' : 'ℹ️'}
+                    ${alarm.severity}
+                </span>
+            </td>
+            <td><strong>${alarm.unit}</strong></td>
+            <td><code style="background: var(--bg-tertiary); padding: 4px 8px; border-radius: 4px;">${alarm.code}</code></td>
+            <td>${alarm.description}</td>
+            <td>${formatAlarmTimestamp(alarm.timestamp)}</td>
+            <td>
+                <span class="alarm-status-badge ${alarm.status}">${alarm.status}</span>
+            </td>
+            <td>
+                <div class="alarm-actions">
+                    ${alarm.status === 'active' ? `<button class="alarm-action-btn" onclick="acknowledgeAlarm('${alarm.id}')">Acknowledge</button>` : ''}
+                    ${alarm.status !== 'cleared' ? `<button class="alarm-action-btn" onclick="clearAlarm('${alarm.id}')">Clear</button>` : ''}
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function formatAlarmTimestamp(isoString) {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffDays < 7) return `${diffDays} days ago`;
+    
+    return date.toLocaleString();
+}
+
+function setupAlarmFilters() {
+    const severityFilter = document.getElementById('alarm-severity-filter');
+    const statusFilter = document.getElementById('alarm-status-filter');
+    const searchInput = document.getElementById('alarm-search');
+    const clearAllBtn = document.getElementById('clear-all-alarms-btn');
+    
+    const applyFilters = () => {
+        let filtered = [...allAlarms];
+        
+        const severity = severityFilter.value;
+        if (severity) {
+            filtered = filtered.filter(a => a.severity === severity);
+        }
+        
+        const status = statusFilter.value;
+        if (status) {
+            filtered = filtered.filter(a => a.status === status);
+        }
+        
+        const search = searchInput.value.toLowerCase();
+        if (search) {
+            filtered = filtered.filter(a => 
+                a.unit.toLowerCase().includes(search) ||
+                a.code.toLowerCase().includes(search) ||
+                a.description.toLowerCase().includes(search)
+            );
+        }
+        
+        displayAlarms(filtered);
+    };
+    
+    severityFilter.addEventListener('change', applyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
+    
+    clearAllBtn.addEventListener('click', () => {
+        if (confirm('Clear all active alarms?')) {
+            allAlarms.forEach(a => {
+                if (a.status === 'active' || a.status === 'acknowledged') {
+                    a.status = 'cleared';
+                }
+            });
+            updateAlarmStats();
+            displayAlarms(allAlarms);
+        }
+    });
+}
+
+function acknowledgeAlarm(alarmId) {
+    const alarm = allAlarms.find(a => a.id === alarmId);
+    if (alarm) {
+        alarm.status = 'acknowledged';
+        updateAlarmStats();
+        displayAlarms(allAlarms);
+    }
+}
+
+function clearAlarm(alarmId) {
+    const alarm = allAlarms.find(a => a.id === alarmId);
+    if (alarm) {
+        alarm.status = 'cleared';
+        updateAlarmStats();
+        displayAlarms(allAlarms);
+    }
+}
 
 

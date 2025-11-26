@@ -18,6 +18,7 @@
   "totalUnits": "Total Units",
   "totalPower": "Total Power",
   "alarms": "Alarms",
+  "alarmsSubtitle": "GenSet Controller Alerts",
   "loadingUnits": "Loading units...",
   "noUnits": "No units found",
   "unitDetails": "Unit Details",
