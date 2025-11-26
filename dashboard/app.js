@@ -706,6 +706,7 @@ function setupNavigation() {
     const dashboardNav = document.getElementById('dashboard-nav');
     const managementNav = document.getElementById('management-nav');
     const analyseNav = document.getElementById('analyse-nav');
+    const alarmsNav = document.getElementById('alarms-nav');
     const apiNav = document.getElementById('api-nav');
     const unitsNav = document.getElementById('units-nav');
     const unitsDropdown = document.getElementById('units-dropdown');
@@ -725,6 +726,12 @@ function setupNavigation() {
     if (analyseNav) {
         analyseNav.addEventListener('click', () => {
             switchSection('analyse');
+        });
+    }
+    
+    if (alarmsNav) {
+        alarmsNav.addEventListener('click', () => {
+            switchSection('alarms');
         });
     }
     
