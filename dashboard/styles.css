@@ -440,7 +440,9 @@ body {
 
 .page-header h1 {
     color: var(--text-primary);
-    font-size: 16px;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 
 .status-badge {
