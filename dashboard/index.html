@@ -626,21 +626,21 @@
             <div class="alarms-controls">
                 <div class="filters">
                     <select id="alarm-severity-filter">
-                        <option value="">All Severities</option>
-                        <option value="critical">Critical</option>
-                        <option value="warning">Warning</option>
-                        <option value="info">Info</option>
+                        <option value="" class="translate" data-key="allSeverities">All Severities</option>
+                        <option value="critical" class="translate" data-key="critical">Critical</option>
+                        <option value="warning" class="translate" data-key="warning">Warning</option>
+                        <option value="info" class="translate" data-key="info">Info</option>
                     </select>
                     <select id="alarm-status-filter">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="acknowledged">Acknowledged</option>
-                        <option value="cleared">Cleared</option>
+                        <option value="" class="translate" data-key="allStatus">All Status</option>
+                        <option value="active" class="translate" data-key="active">Active</option>
+                        <option value="acknowledged" class="translate" data-key="acknowledged">Acknowledged</option>
+                        <option value="cleared" class="translate" data-key="cleared">Cleared</option>
                     </select>
-                    <input type="text" id="alarm-search" placeholder="Search alarms..." />
+                    <input type="text" id="alarm-search" class="translate" data-key="searchAlarms" placeholder="Search alarms..." />
                 </div>
                 <button class="btn-primary" id="clear-all-alarms-btn">
-                    <span>🔕</span> Clear All
+                    <span>🔕</span> <span class="translate" data-key="clearAll">Clear All</span>
                 </button>
             </div>
 
@@ -649,28 +649,28 @@
                     <div class="alarm-stat-icon">⚠️</div>
                     <div class="alarm-stat-content">
                         <div class="alarm-stat-value" id="critical-alarms-count">0</div>
-                        <div class="alarm-stat-label">Critical</div>
+                        <div class="alarm-stat-label translate" data-key="critical">Critical</div>
                     </div>
                 </div>
                 <div class="alarm-stat warning">
                     <div class="alarm-stat-icon">⚡</div>
                     <div class="alarm-stat-content">
                         <div class="alarm-stat-value" id="warning-alarms-count">0</div>
-                        <div class="alarm-stat-label">Warning</div>
+                        <div class="alarm-stat-label translate" data-key="warning">Warning</div>
                     </div>
                 </div>
                 <div class="alarm-stat info">
                     <div class="alarm-stat-icon">ℹ️</div>
                     <div class="alarm-stat-content">
                         <div class="alarm-stat-value" id="info-alarms-count">0</div>
-                        <div class="alarm-stat-label">Info</div>
+                        <div class="alarm-stat-label translate" data-key="info">Info</div>
                     </div>
                 </div>
                 <div class="alarm-stat total">
                     <div class="alarm-stat-icon">📊</div>
                     <div class="alarm-stat-content">
                         <div class="alarm-stat-value" id="total-alarms-count">0</div>
-                        <div class="alarm-stat-label">Total Active</div>
+                        <div class="alarm-stat-label translate" data-key="totalActive">Total Active</div>
                     </div>
                 </div>
             </div>
@@ -679,13 +679,13 @@
                 <table class="alarms-table">
                     <thead>
                         <tr>
-                            <th>Severity</th>
-                            <th>Unit</th>
-                            <th>Alarm Code</th>
-                            <th>Description</th>
-                            <th>Timestamp</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th class="translate" data-key="severity">Severity</th>
+                            <th class="translate" data-key="unit">Unit</th>
+                            <th class="translate" data-key="alarmCode">Alarm Code</th>
+                            <th class="translate" data-key="description">Description</th>
+                            <th class="translate" data-key="timestamp">Timestamp</th>
+                            <th class="translate" data-key="status">Status</th>
+                            <th class="translate" data-key="alarmActions">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="alarms-table-body">

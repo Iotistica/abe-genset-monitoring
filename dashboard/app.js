@@ -1778,17 +1778,61 @@ async function loadAlarms(silent = false) {
 
 function generateMockAlarms() {
     const comapAlarmCodes = [
-        { code: 'E001', description: 'Emergency Stop Activated', severity: 'critical' },
-        { code: 'E002', description: 'Low Oil Pressure', severity: 'critical' },
-        { code: 'E003', description: 'High Engine Temperature', severity: 'critical' },
-        { code: 'E004', description: 'Overspeed Detected', severity: 'critical' },
-        { code: 'W001', description: 'Low Coolant Level', severity: 'warning' },
-        { code: 'W002', description: 'Battery Voltage Low', severity: 'warning' },
-        { code: 'W003', description: 'High Fuel Consumption', severity: 'warning' },
-        { code: 'W004', description: 'Air Filter Maintenance Due', severity: 'warning' },
-        { code: 'I001', description: 'Maintenance Schedule Reminder', severity: 'info' },
-        { code: 'I002', description: 'Generator Started', severity: 'info' },
-        { code: 'I003', description: 'Load Transfer Complete', severity: 'info' }
+        { 
+            code: 'E001', 
+            description: currentLang === 'ru' ? 'Активирован аварийный останов' : 'Emergency Stop Activated', 
+            severity: 'critical' 
+        },
+        { 
+            code: 'E002', 
+            description: currentLang === 'ru' ? 'Низкое давление масла' : 'Low Oil Pressure', 
+            severity: 'critical' 
+        },
+        { 
+            code: 'E003', 
+            description: currentLang === 'ru' ? 'Высокая температура двигателя' : 'High Engine Temperature', 
+            severity: 'critical' 
+        },
+        { 
+            code: 'E004', 
+            description: currentLang === 'ru' ? 'Обнаружено превышение скорости' : 'Overspeed Detected', 
+            severity: 'critical' 
+        },
+        { 
+            code: 'W001', 
+            description: currentLang === 'ru' ? 'Низкий уровень охлаждающей жидкости' : 'Low Coolant Level', 
+            severity: 'warning' 
+        },
+        { 
+            code: 'W002', 
+            description: currentLang === 'ru' ? 'Низкое напряжение аккумулятора' : 'Battery Voltage Low', 
+            severity: 'warning' 
+        },
+        { 
+            code: 'W003', 
+            description: currentLang === 'ru' ? 'Высокий расход топлива' : 'High Fuel Consumption', 
+            severity: 'warning' 
+        },
+        { 
+            code: 'W004', 
+            description: currentLang === 'ru' ? 'Требуется обслуживание воздушного фильтра' : 'Air Filter Maintenance Due', 
+            severity: 'warning' 
+        },
+        { 
+            code: 'I001', 
+            description: currentLang === 'ru' ? 'Напоминание о плановом обслуживании' : 'Maintenance Schedule Reminder', 
+            severity: 'info' 
+        },
+        { 
+            code: 'I002', 
+            description: currentLang === 'ru' ? 'Генератор запущен' : 'Generator Started', 
+            severity: 'info' 
+        },
+        { 
+            code: 'I003', 
+            description: currentLang === 'ru' ? 'Переключение нагрузки завершено' : 'Load Transfer Complete', 
+            severity: 'info' 
+        }
     ];
     
     const statuses = ['active', 'acknowledged', 'cleared'];
@@ -1832,8 +1876,12 @@ function updateAlarmStats() {
 function displayAlarms(alarms) {
     const tbody = document.getElementById('alarms-table-body');
     
+    const noAlarmsText = currentLang === 'ru' ? 'Тревоги не найдены' : 'No alarms found';
+    const acknowledgeText = currentLang === 'ru' ? 'Подтвердить' : 'Acknowledge';
+    const clearText = currentLang === 'ru' ? 'Очистить' : 'Clear';
+    
     if (alarms.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">No alarms found</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">${noAlarmsText}</td></tr>`;
         return;
     }
     
@@ -1850,16 +1898,28 @@ function displayAlarms(alarms) {
             <td>${alarm.description}</td>
             <td>${formatAlarmTimestamp(alarm.timestamp)}</td>
             <td>
-                <span class="alarm-status-badge ${alarm.status}">${alarm.status}</span>
+                <span class="alarm-status-badge ${alarm.status}">${translateStatus(alarm.status)}</span>
             </td>
             <td>
                 <div class="alarm-actions">
-                    ${alarm.status === 'active' ? `<button class="alarm-action-btn" onclick="acknowledgeAlarm('${alarm.id}')">Acknowledge</button>` : ''}
-                    ${alarm.status !== 'cleared' ? `<button class="alarm-action-btn" onclick="clearAlarm('${alarm.id}')">Clear</button>` : ''}
+                    ${alarm.status === 'active' ? `<button class="alarm-action-btn" onclick="acknowledgeAlarm('${alarm.id}')">${acknowledgeText}</button>` : ''}
+                    ${alarm.status !== 'cleared' ? `<button class="alarm-action-btn" onclick="clearAlarm('${alarm.id}')">${clearText}</button>` : ''}
                 </div>
             </td>
         </tr>
     `).join('');
+}
+
+function translateStatus(status) {
+    if (currentLang === 'ru') {
+        const statusMap = {
+            'active': 'Активно',
+            'acknowledged': 'Подтверждено',
+            'cleared': 'Очищено'
+        };
+        return statusMap[status] || status;
+    }
+    return status;
 }
 
 function formatAlarmTimestamp(isoString) {
@@ -1870,10 +1930,17 @@ function formatAlarmTimestamp(isoString) {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
     
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} min ago`;
-    if (diffHours < 24) return `${diffHours} hours ago`;
-    if (diffDays < 7) return `${diffDays} days ago`;
+    if (currentLang === 'ru') {
+        if (diffMins < 1) return 'Только что';
+        if (diffMins < 60) return `${diffMins} мин назад`;
+        if (diffHours < 24) return `${diffHours} ч назад`;
+        if (diffDays < 7) return `${diffDays} дн назад`;
+    } else {
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins} min ago`;
+        if (diffHours < 24) return `${diffHours} hours ago`;
+        if (diffDays < 7) return `${diffDays} days ago`;
+    }
     
     return date.toLocaleString();
 }
@@ -1914,7 +1981,8 @@ function setupAlarmFilters() {
     searchInput.addEventListener('input', applyFilters);
     
     clearAllBtn.addEventListener('click', () => {
-        if (confirm('Clear all active alarms?')) {
+        const confirmText = currentLang === 'ru' ? 'Очистить все активные тревоги?' : 'Clear all active alarms?';
+        if (confirm(confirmText)) {
             allAlarms.forEach(a => {
                 if (a.status === 'active' || a.status === 'acknowledged') {
                     a.status = 'cleared';
