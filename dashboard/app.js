@@ -1,5 +1,5 @@
 // Alfa Balt API Configuration
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'https://abe-genset-api.azurewebsites.net';
 const API_VERSION = 'v1.1';
 const LOGIN_ID = 'mylogin';
 const AUTH_TOKEN = 'test_token';

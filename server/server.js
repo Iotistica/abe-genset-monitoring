@@ -10,7 +10,14 @@ const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5500',
+    'https://proud-sea-01855e30f.3.azurestaticapps.net'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
