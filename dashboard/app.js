@@ -1857,7 +1857,7 @@ function generateMockAlarms() {
         let unitName;
         if (allUnits.length > 0) {
             const unit = allUnits[Math.floor(Math.random() * Math.min(allUnits.length, 3))];
-            unitName = unit.name;
+            unitName = unit.unitName || unit.name || 'GenSet-Unknown';
         } else {
             unitName = defaultUnits[Math.floor(Math.random() * defaultUnits.length)];
         }
