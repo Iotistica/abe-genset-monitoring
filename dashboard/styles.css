@@ -173,7 +173,7 @@ body {
 }
 
 @media (max-width: 1200px) {
-    .nav-item:not(#dashboard-nav):not(#units-nav):not(#management-nav):not(#analyse-nav) {
+    .nav-item:not(#dashboard-nav):not(#units-nav):not(#management-nav):not(#analyse-nav):not(#architecture-nav):not(#api-nav) {
         display: none;
     }
 }
@@ -184,7 +184,7 @@ body {
 }
 
 @media (max-width: 1000px) {
-    .nav-item:not(#dashboard-nav):not(#units-nav) {
+    .nav-menu:not(.mobile-open) .nav-item:not(#dashboard-nav):not(#units-nav) {
         display: none;
     }
 }
@@ -932,6 +932,10 @@ body {
 
     .nav-menu.mobile-open {
         display: flex;
+    }
+
+    .nav-menu.mobile-open .nav-item {
+        display: flex !important;
     }
 
     .nav-item {
