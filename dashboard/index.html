@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfa Balt Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <img src="https://abespb.ru/local/templates/pixelaria/img/redesign/ab_logo.jpg" alt="Alfa Balt" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="logo-fallback" style="display: none;">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Alfa Balt</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item active" id="dashboard-nav" data-section="dashboard">
+                    <span class="nav-icon"></span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item dropdown" id="units-nav">
+                    <span class="nav-icon"></span>
+                    <span class="translate" data-key="units">Units</span>
+                    <span class="dropdown-arrow">▼</span>
+                    <div class="dropdown-menu" id="units-dropdown">
+                        <div class="dropdown-header">Select Unit</div>
+                        <div id="units-menu-list" class="units-menu-list">
+                            <div class="dropdown-loading">Loading units...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-item" id="analyse-nav" data-section="analyse">
+                    <span class="nav-icon"></span>
+                    <span>Analyse</span>
+                </div>
+                <div class="nav-item" id="management-nav" data-section="management">
+                    <span class="nav-icon"></span>
+                    <span>Management</span>
+                </div>
+                <div class="nav-item" id="architecture-nav" data-section="architecture">
+                    <span class="nav-icon"></span>
+                    <span>Architecture</span>
+                </div>
+                <div class="nav-item" id="api-nav" data-section="api">
+            
+                    <span>API</span>
+                </div>
+                <div class="nav-item">
+                    <span>Help</span>
+                </div>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="theme-switcher">
+                <button class="theme-btn" id="theme-toggle" title="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">ENG</button>
+                <button class="lang-btn" data-lang="ru">РУС</button>
+            </div>
+            <div class="nav-status">
+                <span id="connection-status" class="status-badge">Connected</span>
+                <span id="last-update">Last update: --:--:--</span>
+            </div>
+            <div class="nav-user">
+                <span class="user-icon">👤</span>
+                <span class="user-name">John Doe</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="page-section active">
+            <div class="page-header">
+                <h1>Dashboard Overview</h1>
+            </div>
+
+            <div class="filters">
+            <input type="text" id="search" placeholder="Search units..." />
+            <select id="status-filter">
+                <option value="">All Status</option>
+                <option value="Running">Running</option>
+                <option value="Standby">Standby</option>
+                <option value="Warning">Warning</option>
+            </select>
+            <select id="manufacturer-filter">
+                <option value="">All Manufacturers</option>
+                <option value="Cummins">Cummins</option>
+                <option value="Caterpillar">Caterpillar</option>
+                <option value="Perkins">Perkins</option>
+                <option value="FG Wilson">FG Wilson</option>
+                <option value="Kohler">Kohler</option>
+                <option value="MTU Onsite Energy">MTU</option>
+                <option value="HIMOINSA">HIMOINSA</option>
+                <option value="SDMO">SDMO</option>
+            </select>
+            <button id="refresh-btn" onclick="loadUnits()">🔄 Refresh</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Units</h3>
+                <div class="stat-value" id="total-units">--</div>
+            </div>
+            <div class="stat-card running">
+                <h3>Running</h3>
+                <div class="stat-value" id="running-units">--</div>
+            </div>
+            <div class="stat-card standby">
+                <h3>Standby</h3>
+                <div class="stat-value" id="standby-units">--</div>
+            </div>
+            <div class="stat-card warning">
+                <h3>Warnings</h3>
+                <div class="stat-value" id="warning-units">--</div>
+            </div>
+            <div class="stat-card power">
+                <h3 data-i18n="totalPower">Total Power</h3>
+                <div class="stat-value" id="total-power">--</div>
+            </div>
+        </div>
+
+            <div id="units-grid" class="units-grid">
+                <!-- Units will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Analyse Section -->
+        <div id="analyse-section" class="page-section">
+            <div class="page-header">
+                <h1 class="translate" data-key="analyticsAndTrends">Analytics & Trends</h1>
+                <p class="header-subtitle translate" data-key="performanceMetrics">Performance metrics and historical data analysis</p>
+            </div>
+
+            <!-- Time Range Filter -->
+            <div class="chart-controls">
+                <div class="time-range-selector">
+                    <button class="time-btn active translate" data-range="1h" data-key="oneHour">1 Hour</button>
+                    <button class="time-btn translate" data-range="6h" data-key="sixHours">6 Hours</button>
+                    <button class="time-btn translate" data-range="24h" data-key="twentyFourHours">24 Hours</button>
+                    <button class="time-btn translate" data-range="7d" data-key="sevenDays">7 Days</button>
+                    <button class="time-btn translate" data-range="30d" data-key="thirtyDays">30 Days</button>
+                </div>
+                <button class="btn-primary" id="export-data-btn">
+                    <span class="translate" data-key="exportData">📊 Export Data</span>
+                </button>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-container">
+                <!-- Power Generation Chart -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="totalPowerGeneration">⚡ Total Power Generation</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #4a9eff;"></span>
+                                <span class="translate" data-key="activePowerKW">Active Power (kW)</span>
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #10b981;"></span>
+                                <span class="translate" data-key="target">Target</span>
+                            </span>
+                        </div>
+                    </div>
+                    <canvas id="power-chart"></canvas>
+                </div>
+
+                <!-- Unit Status Distribution -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="unitStatusDistribution">⚡ Unit Status Distribution</h3>
+                    </div>
+                    <canvas id="status-chart"></canvas>
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="running">Running</span>
+                            <span class="stat-value running" id="chart-running">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="standby">Standby</span>
+                            <span class="stat-value standby" id="chart-standby">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="stopped">Stopped</span>
+                            <span class="stat-value stopped" id="chart-stopped">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Efficiency Trend -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="efficiencyTrend">⚡  Efficiency Trend</h3>
+                        <div class="chart-value">
+                            <span id="avg-efficiency">--</span>%
+                        </div>
+                    </div>
+                    <canvas id="efficiency-chart"></canvas>
+                </div>
+
+                <!-- Fuel Consumption -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="fuelConsumptionByUnit">⚡  Fuel Consumption by Unit</h3>
+                        <select class="chart-select" id="fuel-period">
+                            <option value="today" class="translate" data-key="today">Today</option>
+                            <option value="week" class="translate" data-key="thisWeek">This Week</option>
+                            <option value="month" selected class="translate" data-key="thisMonth">This Month</option>
+                        </select>
+                    </div>
+                    <canvas id="fuel-chart"></canvas>
+                </div>
+
+                <!-- Temperature Monitoring -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="temperatureMonitoring">⚡  Temperature Monitoring</h3>
+                    </div>
+                    <canvas id="temperature-chart"></canvas>
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="avgCoolant">Avg Coolant</span>
+                            <span class="stat-value" id="avg-coolant">--°C</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="avgOil">Avg Oil</span>
+                            <span class="stat-value" id="avg-oil">--°C</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alarm Frequency -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="alarmFrequency">⚡  Alarm Frequency</h3>
+                    </div>
+                    <canvas id="alarm-chart"></canvas>
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="critical">Critical</span>
+                            <span class="stat-value critical" id="critical-alarms">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="warning">Warning</span>
+                            <span class="stat-value warning" id="warning-alarms">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="info">Info</span>
+                            <span class="stat-value info" id="info-alarms">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Running Hours -->
+                <div class="chart-card large">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="runningHoursComparison">⚡ Running Hours Comparison</h3>
+                        <div class="chart-legend">
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #8b5cf6;"></span>
+                                <span class="translate" data-key="currentPeriod">Current Period</span>
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color" style="background: #6366f1;"></span>
+                                <span class="translate" data-key="previousPeriod">Previous Period</span>
+                            </span>
+                        </div>
+                    </div>
+                    <canvas id="hours-chart"></canvas>
+                </div>
+
+                <!-- Performance Score -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="translate" data-key="performanceScore">⚡ Performance Score</h3>
+                    </div>
+                    <div class="performance-gauge">
+                        <canvas id="performance-gauge"></canvas>
+                        <div class="gauge-value">
+                            <span id="performance-score">--</span>
+                            <small class="translate" data-key="overallScore">Overall Score</small>
+                        </div>
+                    </div>
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="availability">Availability</span>
+                            <span class="stat-value" id="availability-score">--%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label translate" data-key="reliability">Reliability</span>
+                            <span class="stat-value" id="reliability-score">--%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Section -->
+        <div id="management-section" class="page-section">
+            <div class="page-header">
+                <h1 class="translate" data-key="systemManagementTitle">System Management</h1>
+                <p class="header-subtitle translate" data-key="systemManagementSubtitle">Configure and manage your Alfa Balt system</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="users">
+                    <span class="tab-icon">👥</span>
+                    <span class="tab-label">Users</span>
+                </button>
+                <button class="tab-btn" data-tab="units-config">
+                    <span class="tab-icon">⚙️</span>
+                    <span class="tab-label">Unit Config</span>
+                </button>
+                <button class="tab-btn" data-tab="system-settings">
+                    <span class="tab-icon">🔧</span>
+                    <span class="tab-label">System Settings</span>
+                </button>
+                <button class="tab-btn" data-tab="reports">
+                    <span class="tab-icon">📊</span>
+                    <span class="tab-label">Reports</span>
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content active" id="users-tab">
+                <div class="tab-content-header">
+                    <h2>User Management</h2>
+                    <button class="btn-primary" id="add-user-btn">
+                        <span>+ Add User</span>
+                    </button>
+                </div>
+                <div class="users-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th class="translate" data-key="usernameHeader">Username</th>
+                                <th class="translate" data-key="emailHeader">Email</th>
+                                <th class="translate" data-key="roleHeader">Role</th>
+                                <th class="translate" data-key="statusHeader">Status</th>
+                                <th class="translate" data-key="lastLoginHeader">Last Login</th>
+                                <th class="translate" data-key="actionsHeader">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="units-config-tab">
+                <div class="tab-content-header">
+                    <h2>Unit Configuration</h2>
+                    <button class="btn-primary" id="add-unit-btn">
+                        <span>+ Add Unit</span>
+                    </button>
+                </div>
+                <div class="units-config-grid" id="units-config-grid">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="system-settings-tab">
+                <div class="tab-content-header">
+                    <h2 class="translate" data-key="systemSettings">System Settings</h2>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3 class="translate" data-key="generalSettings">General Settings</h3>
+                        <div class="settings-group">
+                            <label class="translate" data-key="systemName">System Name</label>
+                            <input type="text" value="Alfa Balt Production" class="form-input">
+                        </div>
+                        <div class="settings-group">
+                            <label class="translate" data-key="timeZone">Time Zone</label>
+                            <select class="form-select">
+                                <option selected class="translate" data-key="utcStPetersburg">UTC+3 (St. Petersburg)</option>
+                                <option class="translate" data-key="utcMoscow">UTC+3 (Moscow)</option>
+                                <option class="translate" data-key="utcLondon">UTC+0 (London)</option>
+                                <option class="translate" data-key="utcYekaterinburg">UTC+5 (Yekaterinburg)</option>
+                                <option class="translate" data-key="utcNovosibirsk">UTC+7 (Novosibirsk)</option>
+                                <option class="translate" data-key="utcNewYork">UTC-5 (New York)</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <label class="translate" data-key="language">Language</label>
+                            <select class="form-select">
+                                <option class="translate" data-key="english">English</option>
+                                <option class="translate" data-key="russian">Русский</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="translate" data-key="notifications">Notifications</h3>
+                        <div class="settings-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked>
+                                <span class="translate" data-key="emailNotifications">Email notifications</span>
+                            </label>
+                        </div>
+                        <div class="settings-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked>
+                                <span class="translate" data-key="smsAlertsForCriticalAlarms">SMS alerts for critical alarms</span>
+                            </label>
+                        </div>
+                        <div class="settings-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox">
+                                <span class="translate" data-key="pushNotifications">Push notifications</span>
+                            </label>
+                        </div>
+                        <div class="settings-group">
+                            <label class="translate" data-key="emailForAlerts">Email for alerts</label>
+                            <input type="email" value="admin@abespb.ru" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="translate" data-key="dataAndUpdates">Data & Updates</h3>
+                        <div class="settings-group">
+                            <label class="translate" data-key="dataRefreshInterval">Data refresh interval</label>
+                            <select class="form-select">
+                                <option class="translate" data-key="fiveSeconds">5 seconds</option>
+                                <option selected class="translate" data-key="tenSeconds">10 seconds</option>
+                                <option class="translate" data-key="thirtySeconds">30 seconds</option>
+                                <option class="translate" data-key="oneMinute">1 minute</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <label class="translate" data-key="dataRetentionPeriod">Data retention period</label>
+                            <select class="form-select">
+                                <option class="translate" data-key="thirtyDaysPeriod">30 days</option>
+                                <option selected class="translate" data-key="ninetyDays">90 days</option>
+                                <option class="translate" data-key="oneYear">1 year</option>
+                                <option class="translate" data-key="unlimited">Unlimited</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked>
+                                <span class="translate" data-key="autoBackupEnabled">Auto-backup enabled</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="translate" data-key="security">Security</h3>
+                        <div class="settings-group">
+                            <label class="translate" data-key="sessionTimeout">Session timeout</label>
+                            <select class="form-select">
+                                <option class="translate" data-key="fifteenMinutes">15 minutes</option>
+                                <option selected class="translate" data-key="thirtyMinutes">30 minutes</option>
+                                <option class="translate" data-key="oneHourPeriod">1 hour</option>
+                                <option class="translate" data-key="fourHours">4 hours</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked>
+                                <span class="translate" data-key="requireTwoFactorAuth">Require 2-factor authentication</span>
+                            </label>
+                        </div>
+                        <div class="settings-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked>
+                                <span class="translate" data-key="logAllUserActions">Log all user actions</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-actions">
+                    <button class="btn-secondary translate" data-key="resetToDefaults">Reset to Defaults</button>
+                    <button class="btn-primary translate" data-key="saveChanges">Save Changes</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="reports-tab">
+                <div class="tab-content-header">
+                    <h2 class="translate" data-key="reportsAndAnalytics">Reports & Analytics</h2>
+                    <button class="btn-primary" id="generate-report-btn">
+                        <span class="translate" data-key="generateReport">📄 Generate Report</span>
+                    </button>
+                </div>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <div class="report-icon">📈</div>
+                        <h3 class="translate" data-key="performanceReport">Performance Report</h3>
+                        <p class="translate" data-key="performanceReportDesc">Unit performance metrics and efficiency analysis</p>
+                        <div class="report-meta">
+                            <span><span class="translate" data-key="lastGenerated">Last generated</span>: 2024-11-24</span>
+                        </div>
+                        <button class="btn-secondary btn-small translate" data-key="download">Download</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-icon">⚠️</div>
+                        <h3 class="translate" data-key="alarmsSummary">Alarms Summary</h3>
+                        <p class="translate" data-key="alarmsSummaryDesc">Historical alarm data and trends</p>
+                        <div class="report-meta">
+                            <span><span class="translate" data-key="lastGenerated">Last generated</span>: 2024-11-23</span>
+                        </div>
+                        <button class="btn-secondary btn-small translate" data-key="download">Download</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-icon">🔧</div>
+                        <h3 class="translate" data-key="maintenanceLog">Maintenance Log</h3>
+                        <p class="translate" data-key="maintenanceLogDesc">Service history and scheduled maintenance</p>
+                        <div class="report-meta">
+                            <span><span class="translate" data-key="lastGenerated">Last generated</span>: 2024-11-20</span>
+                        </div>
+                        <button class="btn-secondary btn-small translate" data-key="download">Download</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-icon">⚡</div>
+                        <h3 class="translate" data-key="energyUsage">Energy Usage</h3>
+                        <p class="translate" data-key="energyUsageDesc">Power generation and consumption statistics</p>
+                        <div class="report-meta">
+                            <span><span class="translate" data-key="lastGenerated">Last generated</span>: 2024-11-22</span>
+                        </div>
+                        <button class="btn-secondary btn-small translate" data-key="download">Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add User Modal -->
+            <div class="modal" id="add-user-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add New User</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" class="form-input" id="new-username">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-input" id="new-email">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" class="form-input" id="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select class="form-select" id="new-role">
+                                <option value="viewer">Viewer</option>
+                                <option value="operator">Operator</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" id="cancel-user-btn">Cancel</button>
+                        <button class="btn-primary" id="save-user-btn">Create User</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Unit Modal -->
+            <div class="modal" id="edit-unit-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Edit Unit Configuration</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Unit Name</label>
+                            <input type="text" class="form-input" id="edit-unit-name">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" class="form-input" id="edit-unit-location">
+                        </div>
+                        <div class="form-group">
+                            <label>Rated Power (kW)</label>
+                            <input type="number" class="form-input" id="edit-unit-power">
+                        </div>
+                        <div class="form-group">
+                            <label>Maintenance Interval (hours)</label>
+                            <input type="number" class="form-input" id="edit-unit-maintenance">
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="edit-unit-enabled">
+                                <span>Unit Enabled</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" id="cancel-unit-btn">Cancel</button>
+                        <button class="btn-primary" id="save-unit-btn">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Documentation Section -->
+        <div id="api-section" class="page-section">
+            <div class="page-header">
+                <h1 class="translate" data-key="apiDocumentationTitle">API Documentation</h1>
+                <p class="header-subtitle translate" data-key="apiDocumentationSubtitle">ABE API Reference</p>
+            </div>
+            <div class="api-docs-container">
+                <iframe 
+                    id="swagger-ui" 
+                    src="api-docs.html" 
+                    style="width: 100%; height: calc(100vh - 200px); border: 1px solid var(--border-color); border-radius: 8px;"
+                ></iframe>
+            </div>
+        </div>
+
+        <!-- Architecture Diagram Section -->
+        <div id="architecture-section" class="page-section">
+            <div class="page-header">
+                <h1 class="translate" data-key="systemArchitecture">System Architecture</h1>
+                <p class="header-subtitle translate" data-key="abeSystemArchitectureDiagram">ABE System Architecture Diagram</p>
+            </div>
+            <div class="architecture-container">
+                <iframe 
+                    id="architecture-diagram" 
+                    src="architecture-diagram.html" 
+                    style="width: 100%; height: calc(100vh - 200px); border: none; background: #0a0f1e; overflow: hidden;"
+                    scrolling="no"
+                ></iframe>
+            </div>
+        </div>
+
+        <!-- Modal for unit details -->
+        <div id="unit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modal-body">
+                    <!-- Unit details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

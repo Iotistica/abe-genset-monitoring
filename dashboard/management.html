@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management - Alfa Balt</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="management.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <img src="logo_ab.jpg" alt="Alfa Balt" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="logo-fallback" style="display: none;">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Alfa Balt</span>
+                </div>
+                <span class="logo-text">Alfa Balt</span>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item" onclick="window.location.href='index.html'">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item dropdown" id="units-nav">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Units</span>
+                    <span class="dropdown-arrow">▼</span>
+                    <div class="dropdown-menu" id="units-dropdown">
+                        <div class="dropdown-header">Select Unit</div>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span>Analyse</span>
+                </div>
+                <div class="nav-item active">
+                    <span class="nav-icon">🔧</span>
+                    <span>Management</span>
+                </div>
+              
+                <div class="nav-item">
+                    <span class="nav-icon">❓</span>
+                    <span>Help</span>
+                </div>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="theme-switcher">
+                <button class="theme-btn" id="theme-toggle">
+                    <span class="theme-icon" id="theme-icon">🌙</span>
+                </button>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">ENG</button>
+                <button class="lang-btn" data-lang="ru">РУС</button>
+            </div>
+            <div class="nav-status">
+                <span class="status-indicator online"></span>
+                <span class="status-text" id="last-update">Last update: --:--</span>
+            </div>
+            <div class="nav-user">
+                <span class="user-icon">👤</span>
+                <span class="user-name">Admin</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Management Content -->
+    <div class="management-container">
+        <div class="management-header">
+            <h1>System Management</h1>
+            <p class="header-subtitle">Configure and manage your Alfa Balt system</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="users">
+                <span class="tab-icon">👥</span>
+                <span class="tab-label">Users</span>
+            </button>
+            <button class="tab-btn" data-tab="units">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-label">Unit Config</span>
+            </button>
+            <button class="tab-btn" data-tab="settings">
+                <span class="tab-icon">🔧</span>
+                <span class="tab-label">System Settings</span>
+            </button>
+            <button class="tab-btn" data-tab="reports">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">Reports</span>
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content active" id="users-tab">
+            <div class="tab-content-header">
+                <h2>User Management</h2>
+                <button class="btn-primary" id="add-user-btn">
+                    <span>+ Add User</span>
+                </button>
+            </div>
+            <div class="users-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="units-tab">
+            <div class="tab-content-header">
+                <h2>Unit Configuration</h2>
+                <button class="btn-primary" id="add-unit-btn">
+                    <span>+ Add Unit</span>
+                </button>
+            </div>
+            <div class="units-config-grid" id="units-config-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="settings-tab">
+            <div class="tab-content-header">
+                <h2>System Settings</h2>
+            </div>
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3>General Settings</h3>
+                    <div class="settings-group">
+                        <label>System Name</label>
+                        <input type="text" value="Alfa Balt Production" class="form-input">
+                    </div>
+                    <div class="settings-group">
+                        <label>Time Zone</label>
+                        <select class="form-select">
+                            <option>UTC+3 (Moscow)</option>
+                            <option>UTC+0 (London)</option>
+                            <option>UTC-5 (New York)</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label>Language</label>
+                        <select class="form-select">
+                            <option>English</option>
+                            <option>Русский</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Notifications</h3>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Email notifications</span>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>SMS alerts for critical alarms</span>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox">
+                            <span>Push notifications</span>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label>Email for alerts</label>
+                        <input type="email" value="admin@abespb.ru" class="form-input">
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Data & Updates</h3>
+                    <div class="settings-group">
+                        <label>Data refresh interval</label>
+                        <select class="form-select">
+                            <option>5 seconds</option>
+                            <option selected>10 seconds</option>
+                            <option>30 seconds</option>
+                            <option>1 minute</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label>Data retention period</label>
+                        <select class="form-select">
+                            <option>30 days</option>
+                            <option selected>90 days</option>
+                            <option>1 year</option>
+                            <option>Unlimited</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Auto-backup enabled</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Security</h3>
+                    <div class="settings-group">
+                        <label>Session timeout</label>
+                        <select class="form-select">
+                            <option>15 minutes</option>
+                            <option selected>30 minutes</option>
+                            <option>1 hour</option>
+                            <option>4 hours</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Require 2-factor authentication</span>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Log all user actions</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-actions">
+                <button class="btn-secondary">Reset to Defaults</button>
+                <button class="btn-primary">Save Changes</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="reports-tab">
+            <div class="tab-content-header">
+                <h2>Reports & Analytics</h2>
+                <button class="btn-primary" id="generate-report-btn">
+                    <span>📄 Generate Report</span>
+                </button>
+            </div>
+            <div class="reports-grid">
+                <div class="report-card">
+                    <div class="report-icon">📈</div>
+                    <h3>Performance Report</h3>
+                    <p>Unit performance metrics and efficiency analysis</p>
+                    <div class="report-meta">
+                        <span>Last generated: 2024-11-24</span>
+                    </div>
+                    <button class="btn-secondary btn-small">Download</button>
+                </div>
+                <div class="report-card">
+                    <div class="report-icon">⚠️</div>
+                    <h3>Alarms Summary</h3>
+                    <p>Historical alarm data and trends</p>
+                    <div class="report-meta">
+                        <span>Last generated: 2024-11-23</span>
+                    </div>
+                    <button class="btn-secondary btn-small">Download</button>
+                </div>
+                <div class="report-card">
+                    <div class="report-icon">🔧</div>
+                    <h3>Maintenance Log</h3>
+                    <p>Service history and scheduled maintenance</p>
+                    <div class="report-meta">
+                        <span>Last generated: 2024-11-20</span>
+                    </div>
+                    <button class="btn-secondary btn-small">Download</button>
+                </div>
+                <div class="report-card">
+                    <div class="report-icon">⚡</div>
+                    <h3>Energy Usage</h3>
+                    <p>Power generation and consumption statistics</p>
+                    <div class="report-meta">
+                        <span>Last generated: 2024-11-22</span>
+                    </div>
+                    <button class="btn-secondary btn-small">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="add-user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-input" id="new-username">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-input" id="new-email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-input" id="new-password">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select class="form-select" id="new-role">
+                        <option value="viewer">Viewer</option>
+                        <option value="operator">Operator</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-user-btn">Cancel</button>
+                <button class="btn-primary" id="save-user-btn">Create User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Unit Modal -->
+    <div class="modal" id="edit-unit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Unit Configuration</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Unit Name</label>
+                    <input type="text" class="form-input" id="edit-unit-name">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" class="form-input" id="edit-unit-location">
+                </div>
+                <div class="form-group">
+                    <label>Rated Power (kW)</label>
+                    <input type="number" class="form-input" id="edit-unit-power">
+                </div>
+                <div class="form-group">
+                    <label>Maintenance Interval (hours)</label>
+                    <input type="number" class="form-input" id="edit-unit-maintenance">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="edit-unit-enabled">
+                        <span>Unit Enabled</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-unit-btn">Cancel</button>
+                <button class="btn-primary" id="save-unit-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="management.js"></script>
+</body>
+</html>

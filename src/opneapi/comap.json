@@ -1,0 +1,923 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "ABE API",
+        "description": "API  allows customers to obtain data from their units using HTTP methods, such as GET, POST, PUT, and DELETE. REST API is easy to use and scalable, allowing customers to obtain data from units in near real-time. Depending on WSV refresh period.",
+        "version": "v1.1"
+    },
+    "servers": [
+        {
+            "url": "https://api.ABE.net/v1.1"
+        }
+    ],
+    "paths": {
+        "/{loginId}/units": {
+            "get": {
+                "tags": [
+                    "Units"
+                ],
+                "summary": "Units",
+                "description": "Returns list of all units under your account",
+                "operationId": "5ab175d27ce4ba6dd214bacb",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns list of all units under your ABE account in JSON format in the body of the response<br>\n<H4>Response values:</H4>\n<b>count:</b> the number of Units registered under the ABE account. <em> (number)</em><br>\n<b>units:</b> field of Units registered under ABE account. <em> (field)</em><br>\n<b>name:</b> name of the Unit, same as in ABE. <em> (string)</em><br>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>url:</b> URL address, where basic info of the Unit is accessible.<em> (string)</em><br>",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "count": 2,
+                                    "units": [
+                                        {
+                                            "name": "Controller 1",
+                                            "unitGuid": "gensete5ffa1149c0c85b9a4238f8a2e812130",
+                                            "url": "https://ABE.azure-api.net/api/v1/units/gensete5ffa1149c0c85b9a4238f8a2e812130"
+                                        },
+                                        {
+                                            "name": "Controller 2",
+                                            "unitGuid": "gensete5ffa5976c0c85b9a3597f8c2e81a78b",
+                                            "url": "https://ABE.azure-api.net/api/v1/units/gensete5ffa5976c0c85b9a3597f8c2e81a78b"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/values": {
+            "get": {
+                "summary": "Unit values",
+                "description": "Returns last values of unit (e.g. RPM…)",
+                "operationId": "values",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique Unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "valueGuids",
+                        "in": "query",
+                        "description": "Unique value identifier (accept multiple guids separated by commas). Leave blank to show all possible values in the Unit\n",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns all/selected values from the Unit\n<H4>Response values:</H4>\n<b>name:</b> name of the Unit, same as in ABE.<em> (string)</em><br>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>values:</b>  field of the Unit values<em> (field)</em><br>\n&emsp;&emsp;<b>name:</b> name of the value, same as in ABE.<em> (string)</em><br>\n&emsp;&emsp;<b>valueGuid:</b> unique static identification of the value.<em> (string)</em><br>\n&emsp;&emsp;<b>value:</b> current value. Can be a list of values if applicable.<em> (string)</em><br>\n&emsp;&emsp;<b>unit:</b> the physical units.<em> (string)</em><br>\n&emsp;&emsp;<b>highLimit:</b> value high limit configured in the ABE. Just for values, where it is applicable.<em> (number)</em><br>\n&emsp;&emsp;<b>lowLimit:</b> value low limit configured in the ABE. Just for values, where it is applicable.<em> (number)</em><br>\n&emsp;&emsp;<b>decimalPlaces:</b> decimal places of the value.<em> (number)</em><br>\n&emsp;&emsp;<b>timeStamp:</b> the timestamp, when the value has been read from the Unit.<em> (string)</em><br>",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "name": "Controller 1",
+                                    "unitGuid": "gensete5ffa1149c0c85b9a4238f8a2e812130",
+                                    "values": [
+                                        {
+                                            "name": "Last Update",
+                                            "valueGuid": "0C9117DA-495A-11DF-85EB-428556D89593",
+                                            "value": "2018-06-10T19:08:14.6350000+00:00",
+                                            "unit": "",
+                                            "highLimit": 0,
+                                            "lowLimit": 0,
+                                            "decimalPlaces": 0,
+                                            "timeStamp": "2018-06-10T19:08:14.6350000+00:00"
+                                        },
+                                        {
+                                            "name": "RPM",
+                                            "valueGuid": "6629f84f-4b79-43c2-ab33-1f27f1f8c42b",
+                                            "value": 1500,
+                                            "unit": "RPM",
+                                            "highLimit": 3000,
+                                            "lowLimit": 0,
+                                            "decimalPlaces": 0,
+                                            "timeStamp": "2018-06-10T19:08:12.9400000+00:00"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/info": {
+            "get": {
+                "tags": [
+                    "Units"
+                ],
+                "summary": "Unit info",
+                "description": "Returns basic information about the unit",
+                "operationId": "5afe822e472fc35856d0169c",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns basic information about the unit\n<H4>Response values:</H4>\n<b>name:</b> name of the Unit, same as in ABE.<em> (string)</em><br>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>ownerLoginId:</b> account with owner status configured in the Unit.<em> (string)</em><br>\n<b>applicationType:</b> application type configured in the Unit.<em> (string)</em><br>\n<b>timezone:</b> timezone configured in the Unit.<em> (string)</em><br>\n<b>connection:</b>  list of values related to the Unit network connection.<em> (field)</em><br>\n&emsp;&emsp;<b>enabled:</b> network connection is enabled/disabled. true/false<em> (boolean)</em><br>\n&emsp;&emsp;<b>airGateId:</b> ID of connection trought Airtgate service.<em> (string)</em><br>\n&emsp;&emsp;<b>ipAddress:</b> IP address of the Unit network interface.<em> (string)</em><br>\n&emsp;&emsp;<b>port:</b> used TCP port.<em> (number)</em><br>\n&emsp;&emsp;<b>controllerAddress:</b> Address of controller configured in the Unit.<em> (number)</em><br>\n<b>position:</b>  list of values related to the Unit configured position.<em> (field)</em><br>\n&emsp;&emsp;<b>positionType:</b> type of configured position of the Unit.<em> (string)</em><br>\n&emsp;&emsp;<b>latitude:</b> geographical position - latitude.<em> (string)</em><br>\n&emsp;&emsp;<b>longtitude:</b> geographical position - longtitude.<em> (string)</em><br>\n",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "name": "Controller 1",
+                                    "unitGuid": "gensete5ffa1149c0a78b4a5798f8a2e812130",
+                                    "ownerLoginId": "user_1",
+                                    "applicationType": "Rental",
+                                    "timezone": "Europe/Prague",
+                                    "connection": {
+                                        "enabled": true,
+                                        "airGateId": "eC6M9w2",
+                                        "ipAddress": "",
+                                        "port": 0,
+                                        "controllerAddress": 1
+                                    },
+                                    "position": {
+                                        "positionType": "Static",
+                                        "latitude": "50.10694",
+                                        "longitude": "14.45333"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/permissions": {
+            "get": {
+                "summary": "Unit permissions",
+                "description": "List of Unit users with their permissions",
+                "operationId": "5afe8614310162e2e68d80a3",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns list of all users with some rights to the unit\n<H4>Response values:</H4>\n<b>name:</b> name of the Unit, same as in ABE.<em> (string)</em><br>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>permisions:</b>  field of the users and their permissions top the Unit<em> (field)</em><br>\n&emsp;&emsp;<b>loginId:</b> the login name.<em> (string)</em><br>\n&emsp;&emsp;<b>read:</b> User can read values. true/false.<em> (boolean)</em><br>\n&emsp;&emsp;<b>control:</b> User can control the Unit. true/false..<em> (boolean)</em><br>\n&emsp;&emsp;<b>modify</b> User can change settings of the Unit. true/false<em> (boolean)</em><br>\n&emsp;&emsp;<b>shutdownNote</b> User can do shutdown Notes.<em> (boolean)</em><br>\n&emsp;&emsp;<b>allAlarmsNote:</b> User can do alarm Notes.<em> (boolean)</em><br>\n",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "name": "Controller 1",
+                                    "unitGuid": "gensete5ffa1149c0c85b9a4238f8a2e812130",
+                                    "permissions": [
+                                        {
+                                            "loginId": "user_1",
+                                            "read": true,
+                                            "control": true,
+                                            "modify": true,
+                                            "shutdownNote": true,
+                                            "allAlarmsNote": true
+                                        },
+                                        {
+                                            "loginId": "user_2",
+                                            "read": true,
+                                            "control": true,
+                                            "modify": false,
+                                            "shutdownNote": false,
+                                            "allAlarmsNote": false
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/history": {
+            "get": {
+                "summary": "Unit history",
+                "description": "Returns historical values of unit (e.g. RPM…)<br>\nIn case of request for bigger amout of data, it has to be split into several requests and use \nsequential data read. For this purpose requests contain attribute <b>offset</b>. Response \nhas attribute <b>nextOffset</b>. Limit for one response is <b>200 kB.</b>\n<br>\n⚠️<b>Caution:</b> Data in the response are formatted as, that only changes in value are stored. In response you obtain the value and from/to the period when it was valid.  For timeline applications, you have to parse data in the application. <br>\n###  Rate Limiter\n\nAll API clients share a flat limit of **1 request per second** (60 requests per rolling 60-second window).  \nNeed more than 1 RPS? Contact support at [api@ABE.net](mailto:api@ABE.net) with details of your integration and projected throughput.\n\n#### Headers\n\n| Header                  | Meaning                                         |\n|-------------------------|-------------------------------------------------|\n| `X-RateLimit-Limit`     | The fixed window size – always 60               |\n| `X-RateLimit-Remaining` | Requests you can still make in the current window |\n\n---\n> ⚠️ Exceeding the limit returns HTTP response **`429 Too Many Requests`**.\n\n\n### Historic Retrieval Window\n\nUsers can request historical unit data for a period of up to **31 days** (inclusive).\n\n> ⚠️ If the requested date range exceeds this window, the API returns **`400 Bad Request`** with an explanation.\n",
+                "operationId": "5aff2c4369985adcb9a6134e",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "History is provided from this date, default value is first day in actual month, format MM/DD/YYYY",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "History is provided until this date, default value is time of the query, format MM/DD/YYYY",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset address for the next batch of values, default value is 0",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "valueGuids",
+                        "in": "query",
+                        "description": "Unique value identifier",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns list of historical values\n<H4>Response headers:</H4>\n\n\n| Header                  | Meaning                                                 | Type        |\n|-------------------------|----------------------------------------------------------|-------------|\n| `X-RateLimit-Limit`     | The fixed window size – always 60                        | number (string)     |\n| `X-RateLimit-Remaining` | Number of requests you can still make in the current window | number (string)      |\n\n<H4>Response values:</H4>\n<b>name:</b> name of the Unit, same as in ABE.<em> (string)</em><br>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>nextOffset:</b> address to obtain the next batch of data. Should be used in the offset parameter in the request. \"null\" if there is no next batch<em> (number)</em><br>\n<b>values:</b>  list of the historical values with period of validity.<em> (field)</em><br>\n&emsp;&emsp;<b>name:</b> name of the value, same as in the ABE. <em> (string)</em><br>\n&emsp;&emsp;<b>valueGuid:</b> unique static identifier of the value.<em> (string)</em><br>\n&emsp;&emsp;<b>history:</b>  list of the historical values with a period of validity.<em> (field)</em><br>\n&emsp;&emsp;&emsp;&emsp;<b>value:</b> valid value in the period.<em> (type depends on the value)</em><br>\n&emsp;&emsp;&emsp;&emsp;<b>validFrom:</b> value valid from.<em> (string)</em><br>\n&emsp;&emsp;&emsp;&emsp;<b>validTo:</b> value valid to.<em> (string)</em><br>",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "name": "Controller 1",
+                                    "unitGuid": "gensete5ffa1149c0c85b9a4238f8a2e812130",
+                                    "nextOffset": null,
+                                    "values": [
+                                        {
+                                            "name": "RPM",
+                                            "valueGuid": "6629f84f-4b79-43c2-ab33-1f27f1f8c42b",
+                                            "history": [
+                                                {
+                                                    "value": 1500,
+                                                    "validTo": "2018-06-10T11:44:02.4370000+00:00"
+                                                },
+                                                {
+                                                    "value": 1501,
+                                                    "validTo": "2018-06-10T13:38:32.7310000+00:00"
+                                                },
+                                                {
+                                                    "value": 1500,
+                                                    "validTo": "2018-06-10T19:37:52.6530000+00:00"
+                                                }
+                                            ],
+                                            "unit": "RPM",
+                                            "decimalPlaces": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "- Response when incorrect unitGuid is provided<br>\n<b>Response Message:</b> Incorrect unitGuid provided.\n- Response when selected date range exceeded 31 days (including). Calculated based on From and To request parameters<br>\n<b>Response Message:</b> The requested period exceeds the 31 day history retrieval window."
+                    },
+                    "401": {
+                        "description": "- Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "429": {
+                        "description": "- Response when rate limit is exceeded. If you recieved this response, pause for the indicated Retry-After duration before retrying.<br>\n<b>Response Value:</b> Retry-After: In seconds indicating how long you are supposed to wait before sending another request.<br>\n<b>Response Message:</b>\tRate limit exceeded. Retry after x second/s."
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/command": {
+            "post": {
+                "tags": [
+                    "Units"
+                ],
+                "summary": "Unit commands",
+                "description": "Allows commanding of the engine.",
+                "operationId": "5b346ed211bdf686c2a10b8f",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "## List of all available commands: \n- #### start\n- #### stop\n- #### faultReset\n- #### changeMcb\n    - toggle Mains circuit breaker\n- #### changeGcb\n    - toggle Genset circuit breaker\n- #### sensorButton\n    - supported only by special branch of controllers\n- #### timerButton\n    - supported only by special branch of controllers\n- #### changeMode\n    - requires attribute \"mode\" - string representing mode e.g. off, man, aut, test\n        - for list of available modes for particular controller model check the value 49424e2b-1009-471c-b8e3-3e84e9c16159\n- #### userButton\n    - requires attribute \"index\" - number to identify user button (1-32)\n    - requires attribute \"action\" - string representing action (\"start\", \"stop\", \"toggle\", \"pulse\")\n- #### remoteSwitch\n    - requires attribute \"index\" - number to identify remote switch (1-8)\n    - requires attribute \"action\" - string representing action (\"start\", \"stop\")\n- #### extValue\n    - requires attribute \"index\" - number to identify external value (1-4)\n    - requires attribute \"value\" - numerical value written to selected external value\n- #### setTimer\n    - requires attribute \"index\" - number to identify timer (1-2)\n    - requires attribute \"action\" - json object with timer settings\n- #### changeSetpoint\n    - requires attribute \"guid\" - guid to identify setpoint\n    - requires attribute \"value\" - numerical value or string to selected setpoint, **string values are case sensitive**\n\n### JSON object for timer settings:\n- requires attribute \"mode\" - string representing timer settings (\"Off\", \"Once\", \"Daily\", \"Weekly\", \"Monthly\", \"MonthlyDays\", \"Period\")\n    - for \"mode\": \"**Off**\"\n        - no attribute\n    - for \"mode\": \"**Once**\"\n        - requires attribute \"from\" - number, timer first occurance, UNIX epoch time in miliseconds\n        - requires attribute \"duration\" - number, timer duration in minutes\n    - for \"mode\": \"**Daily**\"\n        - requires attribute \"from\" - number, timer first occurance, UNIX epoch time in miliseconds\n        - requires attribute \"duration\" - number, timer duration in minutes\n        - requires attribute \"setupDaily\" - json object with timer settings\n            - requires attribute \"dayRepeat\" - number, repeat every x. day\n            - requires attribute \"dayWeekend\" - string, how to handle weekends (\"Included\", \"Except\", \"nextDayAfter\")\n    - for \"mode\": \"**Weekly**\"\n        - requires attribute \"from\" - number, timer first occurance, UNIX epoch time in miliseconds\n        - requires attribute \"duration\" - number, timer duration in minutes\n        - requires attribute \"setupWeekly\" - json object with timer settings\n            - requires attribute \"weekRepeat\" - number, repeat every x. week\n            - requires attribute \"weekDays\" - string array, select day/s when execute (\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\", \"Sunday\")\n    - for \"mode\": \"**Monthly**\"\n        - requires attribute \"from\" - number, timer first occurance, UNIX epoch time in miliseconds\n        - requires attribute \"duration\" - number, timer duration in minutes\n        - requires attribute \"setupMonthly\" - json object with timer settings\n            - requires attribute \"monthRepeat\" - number, repeat every x. month\n            - requires attribute \"dayInMonth\" - number, repeat every x. day in month\n    - for \"mode\": \"**MonthlyDays**\"\n        - requires attribute \"from\" - number, timer first occurance, UNIX epoch time in miliseconds\n        - requires attribute \"duration\" - number, timer duration in minutes\n        - requires attribute \"setupMonthlyDays\" - json object with timer settings\n            - requires attribute \"monthRepeat\" - number, repeat every x. month\n            - requires attribute \"weekInMonth\" - number, repeat every x. week in month\n            - requires attribute \"weekDays\" - string array, select day/s when execute (\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\", \"Sunday\")\n    - for \"mode\": \"**Period**\"\n        - requires attribute \"from\" - number, timer first occurance, UNIX epoch time in miliseconds\n        - requires attribute \"duration\" - number, timer duration in minutes\n        - requires attribute \"setupPeriod\" - json object with timer settings\n            - requires attribute \"minutesRepeat\" - number, repeat every x minutes\n\n\n           ",
+                    "content": {
+                        "Start": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "start"
+                            }
+                        },
+                        "ChangeMode": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "changeMode",
+                                "mode": "man"
+                            }
+                        },
+                        "UserButton": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "userButton",
+                                "index": 2,
+                                "action": "start"
+                            }
+                        },
+                        "SetTimer - off": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "setTimer",
+                                "index": 1,
+                                "action": {
+                                    "mode": "off"
+                                }
+                            }
+                        },
+                        "SetTimer - once": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "setTimer",
+                                "index": 1,
+                                "action": {
+                                    "mode": "once",
+                                    "from": 1601286038000,
+                                    "duration": 60
+                                }
+                            }
+                        },
+                        "SetTimer - weekly": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "setTimer",
+                                "index": 1,
+                                "action": {
+                                    "mode": "weekly",
+                                    "from": 1601286038000,
+                                    "duration": 60,
+                                    "setupWeekly": {
+                                        "weekRepeat": 2,
+                                        "weekDays": [
+                                            "Monday",
+                                            "Wednesday",
+                                            "Friday",
+                                            "Sunday"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "ExtValue": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "extValue",
+                                "index": 3,
+                                "value": 100
+                            }
+                        },
+                        "ChangeSetpoint": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body"
+                            },
+                            "example": {
+                                "command": "changeSetpoint",
+                                "guid": "7b2ae258-65a8-40dd-bb42-5455753679f9",
+                                "value": "MyController"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Command was successfully sent.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/comments": {
+            "get": {
+                "tags": [
+                    "Units"
+                ],
+                "summary": "Unit comments",
+                "description": "Returns comments posted on unit's detail view screen",
+                "operationId": "5b4b0a8096eabe1eebe814b1",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns array of all comments posted on unit's detail view screen\n<H4>Response values:</H4>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>comments:</b>  list of comments posted on unit's detail view screen.<em> (field)</em><br>\n&emsp;&emsp;<b>id:</b> ID of the comment.<em> (number)</em><br>\n&emsp;&emsp;<b>author:</b> type of the file.<em> (string)</em><br>\n&emsp;&emsp;<b>date:</b> timestamp when comment was created.<em> (string)</em><br>\n&emsp;&emsp;<b>text:</b> message in the comment.<em> (string)</em><br>\n&emsp;&emsp;<b>active:</b> status of comment. true/false.<em> (boolean)</em><br>",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "unitGuid": "gensete5ffa1199c0c42b4a4ab8f8a2e812139",
+                                    "comments": [
+                                        {
+                                            "id": 366,
+                                            "auhtor": "ComAp",
+                                            "date": "2017-11-29T14:08:24.5680000+00:00",
+                                            "text": "First comment",
+                                            "active": false
+                                        },
+                                        {
+                                            "id": 1208,
+                                            "auhtor": "John Doe",
+                                            "date": "2018-07-15T09:07:30.6710000+00:00",
+                                            "text": "Second comment",
+                                            "active": true
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/units/{unitGuid}/files": {
+            "get": {
+                "summary": "Unit files",
+                "description": "Returns list of all available files stored in the the unit.",
+                "operationId": "5bb211e0056139e64085fe89",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns list of all files stored in the unit\n<H4>Response values:</H4>\n<b>unitGuid:</b>  unique static identification of the Unit.<em> (string)</em><br>\n<b>files:</b>  list of files available in the Unit.<em> (field)</em><br>\n&emsp;&emsp;<b>fileName:</b> name of the file.<em> (string)</em><br>\n&emsp;&emsp;<b>fileType:</b> type of the file.<em> (string)</em><br>\n&emsp;&emsp;<b>generated:</b> timestamp when file was created.<em> (string)</em><br>",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "unitGuid": "gensetb29217919bf24cf3b77296b0e74f51fc",
+                                    "files": [
+                                        {
+                                            "fileName": "2018-09-18_10-18_controller 1.csv",
+                                            "fileType": "unitHistory",
+                                            "generated": "2018-09-18T08:18:47.0000000+00:00"
+                                        },
+                                        {
+                                            "fileName": "2018-10-01_12-32_controller 1.csv",
+                                            "fileType": "unitHistory",
+                                            "generated": "2018-10-01T10:32:28.0000000+00:00"
+                                        },
+                                        {
+                                            "fileName": "2018-10-01_12-33_controller 1.csv",
+                                            "fileType": "unitHistory",
+                                            "generated": "2018-10-01T10:33:19.0000000+00:00"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/{loginId}/unit/{unitGuid}/download/{fileName}": {
+            "get": {
+                "summary": "Download file",
+                "description": "Returns file containing controller history or WSV report.",
+                "operationId": "download-file",
+                "parameters": [
+                    {
+                        "name": "loginId",
+                        "in": "path",
+                        "description": "WSV account you want to access via API",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "unitGuid",
+                        "in": "path",
+                        "description": "Unique unit identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fileName",
+                        "in": "path",
+                        "description": "Name of the file you want to download",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Header for token type + access token, i.e. \"Bearer asd....fg12\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Comap-Key",
+                        "in": "header",
+                        "description": "Subscription key - stored in the user's profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the file"
+                    },
+                    "400": {
+                        "description": "Response when incorrect unitGuid is provided"
+                    },
+                    "401": {
+                        "description": "Response when incorrect or expired token is provided"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body": {
+                "example": "{\n    \"command\": \"changeMode\",\n    \"mode\": \"man\"\n}"
+            },
+            "AuthenticatePostRequest": {
+                "example": "{\n    \"username\": \"WSVusername\",\n    \"password\": \"WSVpassword\"\n}"
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Comap-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "comap-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}

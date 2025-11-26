@@ -1,0 +1,494 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "ComAp Cloud Identity",
+        "description": "API methods allow users more granular control for accessing ComAp Cloud applications secured by ComAp Cloud Identity provider. If you are using ComAp cloud identity, you need use this API first to generate OAuth tokens",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.ABE.net/identity"
+        }
+    ],
+    "paths": {
+        "/application": {
+            "get": {
+                "tags": [
+                    "Application"
+                ],
+                "summary": "Get application for sign-in user",
+                "description": "Returns application registration (clientId) and registered secrets for OAuth authentication with client_credentials.",
+                "operationId": "application-get",
+                "responses": {
+                    "200": {
+                        "description": "Returns Client ID for currently signed in identity and registered secrets without secret text.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "client_id": "aaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                                    "secrets": [
+                                        {
+                                            "secretId": "f0b0b335-1d71-4883-8f98-567911bfdca6",
+                                            "displayName": "Password friendly name",
+                                            "endDateTime": "2021-09-09T19:50:29.3086381+00:00",
+                                            "hint": "[6g"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No application registration found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Application"
+                ],
+                "summary": "Create application registration",
+                "description": "Create application registration for signed-in identity",
+                "operationId": "application-create",
+                "responses": {
+                    "201": {
+                        "description": "Application successfully created.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApplicationRegistration"
+                                },
+                                "example": {
+                                    "client_id": "aaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to register application",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Application"
+                ],
+                "summary": "Delete application registration",
+                "description": "Delete application registration for signed-in identity",
+                "operationId": "application-delete",
+                "responses": {
+                    "204": {
+                        "description": "Application registration deleted"
+                    },
+                    "400": {
+                        "description": "Error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Application registration not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/application/createSecret": {
+            "post": {
+                "tags": [
+                    "Application Secrets"
+                ],
+                "summary": "Create application secret",
+                "description": "Create secret with optional display name and validity",
+                "operationId": "application-secret-create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SecretCreate"
+                            },
+                            "example": {
+                                "clientId": "string",
+                                "secret": {
+                                    "displayName": "string",
+                                    "duration": "2y"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Application secret was successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApplicationSecret"
+                                },
+                                "example": {
+                                    "secretId": "string",
+                                    "displayName": "string",
+                                    "secret": "string",
+                                    "endDateTime": "string",
+                                    "hint": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error occurred during application secret creation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/application/deleteSecret": {
+            "post": {
+                "tags": [
+                    "Application Secrets"
+                ],
+                "summary": "Delete application secret",
+                "description": "Delete secret by required secretId",
+                "operationId": "application-secret-delete",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SecretDelete"
+                            },
+                            "example": {
+                                "clientId": "string",
+                                "secret": {
+                                    "secretId": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Application secret was successfully deleted"
+                    },
+                    "400": {
+                        "description": "Error occurred during application secret creation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/application/authenticate": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Authenticate",
+                "description": "Get token based on provided clientId and secret. <br>\n<b>Caution: </b> <br>\nTo against API for the request flood, there are 5 requests for token per 5 minutes only allowed.",
+                "operationId": "application-authenticate",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Authenticate"
+                            },
+                            "example": {
+                                "clientId": "string",
+                                "secret": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token was successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApplicationToken"
+                                },
+                                "example": {
+                                    "token_type": "string",
+                                    "expires_in": 0,
+                                    "ext_expires_in": 0,
+                                    "access_token": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error occurred during token creation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                },
+                                "example": {
+                                    "errorMessage": "Unable to perform requested operation"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApplicationRegistration": {
+                "title": "Application registration object",
+                "type": "object",
+                "properties": {
+                    "clientId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "secrets": {
+                        "maxItems": 2,
+                        "minItems": 0,
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "secretId": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "displayName": {
+                                    "type": "string"
+                                },
+                                "endDateTime": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "hint": {
+                                    "maxLength": 3,
+                                    "minLength": 3,
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "client_id": "aaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                    "secrets": [
+                        {
+                            "secretId": "f0b0b335-1d71-4883-8f98-567911bfdca6",
+                            "displayName": "Password friendly name",
+                            "endDateTime": "2021-09-09T19:50:29.3086381+00:00",
+                            "hint": "[6g"
+                        }
+                    ]
+                }
+            },
+            "ApplicationSecret": {
+                "title": "Application secret object",
+                "type": "object",
+                "properties": {
+                    "secretId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    },
+                    "secret": {
+                        "type": "string",
+                        "description": "Generated secret itself, beware that secret is not displayed in other API methods"
+                    },
+                    "endDateTime": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "hint": {
+                        "maxLength": 3,
+                        "minLength": 3,
+                        "type": "string"
+                    }
+                },
+                "description": "Object represents newly created application secret"
+            },
+            "SecretCreate": {
+                "title": "Secret create schema",
+                "required": [
+                    "clientId"
+                ],
+                "type": "object",
+                "properties": {
+                    "clientId": {
+                        "type": "string",
+                        "description": "GUID of application registration",
+                        "format": "uuid"
+                    },
+                    "secret": {
+                        "type": "object",
+                        "properties": {
+                            "displayName": {
+                                "type": "string",
+                                "description": "Optional secret display name"
+                            },
+                            "duration": {
+                                "type": "string",
+                                "description": "Optional duration of secret validity (currently unsupported)",
+                                "default": "2y"
+                            }
+                        }
+                    }
+                }
+            },
+            "SecretDelete": {
+                "title": "Secret delete schema",
+                "required": [
+                    "clientId"
+                ],
+                "type": "object",
+                "properties": {
+                    "clientId": {
+                        "type": "string",
+                        "description": "GUID of application registration",
+                        "format": "uuid"
+                    },
+                    "secret": {
+                        "required": [
+                            "secretId"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "secretId": {
+                                "type": "string",
+                                "description": "GUID of secret for deletion",
+                                "format": "uuid"
+                            }
+                        }
+                    }
+                }
+            },
+            "Authenticate": {
+                "title": "Authenticate schema",
+                "required": [
+                    "clientId",
+                    "secret"
+                ],
+                "type": "object",
+                "properties": {
+                    "clientId": {
+                        "type": "string",
+                        "description": "GUID of application registration",
+                        "format": "uuid"
+                    },
+                    "secret": {
+                        "type": "string",
+                        "description": "Secret itself"
+                    }
+                }
+            },
+            "ApplicationToken": {
+                "title": "Application token object",
+                "type": "object",
+                "properties": {
+                    "token_type": {
+                        "type": "string",
+                        "description": "Type of the created token"
+                    },
+                    "expires_in": {
+                        "type": "integer",
+                        "description": "Number of seconds to expiration"
+                    },
+                    "ext_expires_in": {
+                        "type": "integer",
+                        "description": "Number of seconds to expiration during STS outage"
+                    },
+                    "access_token": {
+                        "type": "string",
+                        "description": "Token itself"
+                    }
+                },
+                "description": "Object represents newly created token"
+            },
+            "ErrorMessage": {
+                "title": "Error message object",
+                "type": "object",
+                "properties": {
+                    "errorMessage": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "errorMessage": "Unable to perform requested operation"
+                }
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Comap-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "comap-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}

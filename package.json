@@ -1,0 +1,42 @@
+{
+  "name": "Alfa Balt-api",
+  "version": "1.0.0",
+  "description": "Node.js client for Alfa Balt API v1.1 (ABE-compatible) - Control and monitor genset controllers",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node examples/basic-usage.js",
+    "server": "node server/server.js",
+    "server:dev": "nodemon server/server.js",
+    "auth": "node examples/authentication.js",
+    "auth:login": "node examples/authentication.js --auth",
+    "auth:secrets": "node examples/authentication.js --secrets",
+    "example:basic": "node examples/basic-usage.js",
+    "example:commands": "node examples/commands.js",
+    "example:history": "node examples/historical-data.js",
+    "example:monitor": "node examples/monitoring.js",
+    "example:advanced": "node examples/advanced-usage.js"
+  },
+  "keywords": [
+    "comap",
+    "ABE",
+    "api",
+    "client",
+    "genset",
+    "controller",
+    "monitoring"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2"
+  }
+}

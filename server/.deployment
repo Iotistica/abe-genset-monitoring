@@ -1,0 +1,12 @@
+# Azure Web App configuration
+{
+  "version": "1.0.0",
+  "defaultProvider": "AppServiceProvider",
+  "appServiceProvider": {
+    "name": "abe-genset-api",
+    "resourceGroup": "abe-genset-rg",
+    "location": "eastus",
+    "sku": "B1",
+    "runtime": "node|18-lts"
+  }
+}
