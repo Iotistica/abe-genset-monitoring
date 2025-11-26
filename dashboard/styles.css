@@ -1659,11 +1659,11 @@ canvas {
 
 .chart-card canvas {
     width: 100% !important;
-    height: auto !important;
+    height: 250px !important;
 }
 
 .chart-card.expanded canvas {
-    height: auto !important;
+    height: 400px !important;
 }
 
 /* Chart Stats */
