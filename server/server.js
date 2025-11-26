@@ -1,5 +1,3 @@
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -7,7 +5,8 @@ const unitsRouter = require('./routes/units');
 const identityRouter = require('./routes/identity');
 
 const app = express();
-const PORT = process.env.SERVER_PORT || 3000;
+// Azure sets PORT automatically, fallback to 3000 for local development
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3000;
 
 // Middleware
 app.use(cors({
