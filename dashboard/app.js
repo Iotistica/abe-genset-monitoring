@@ -8,7 +8,7 @@ const COMAP_KEY = 'test_key';
 // Global state
 let allUnits = [];
 let unitValues = new Map();
-let currentLang = localStorage.getItem('language') || 'en';
+let currentLang = localStorage.getItem('language') || 'ru';
 let translations = {};
 
 // Load translations from JSON files
