@@ -32,6 +32,7 @@
   "searchAlarms": "Search alarms...",
   "clearAll": "Clear All",
   "totalActive": "Total Active",
+  "alarmTrends": "Alarm Trends - Last 7 Days",
   "loadingUnits": "Loading units...",
   "noUnits": "No units found",
   "unitDetails": "Unit Details",

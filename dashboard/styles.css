@@ -1800,6 +1800,28 @@ canvas {
     gap: 16px;
 }
 
+.alarm-chart-container {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.alarm-chart-container .chart-header {
+    margin-bottom: 20px;
+}
+
+.alarm-chart-container .chart-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.alarm-chart-container canvas {
+    max-height: 300px;
+}
+
 .alarms-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

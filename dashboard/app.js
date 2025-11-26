@@ -1759,10 +1759,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Alarms functionality
 let allAlarms = [];
+let alarmTrendsChart = null;
 
 function setupAlarms() {
     loadAlarms();
     setupAlarmFilters();
+    createAlarmTrendsChart();
     
     // Auto-refresh alarms every 10 seconds
     setInterval(() => {
@@ -2028,6 +2030,130 @@ function clearAlarm(alarmId) {
         updateAlarmStats();
         displayAlarms(allAlarms);
     }
+}
+
+function createAlarmTrendsChart() {
+    const ctx = document.getElementById('alarm-trends-chart');
+    if (!ctx) return;
+    
+    // Generate data for last 7 days
+    const days = [];
+    const criticalData = [];
+    const warningData = [];
+    const infoData = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dayName = currentLang === 'ru' 
+            ? date.toLocaleDateString('ru-RU', { weekday: 'short', month: 'short', day: 'numeric' })
+            : date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        days.push(dayName);
+        
+        // Generate mock data - in production, this would come from API
+        criticalData.push(Math.floor(Math.random() * 5) + 1);
+        warningData.push(Math.floor(Math.random() * 10) + 3);
+        infoData.push(Math.floor(Math.random() * 15) + 5);
+    }
+    
+    if (alarmTrendsChart) {
+        alarmTrendsChart.destroy();
+    }
+    
+    alarmTrendsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: days,
+            datasets: [
+                {
+                    label: currentLang === 'ru' ? 'Критические' : 'Critical',
+                    data: criticalData,
+                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: currentLang === 'ru' ? 'Предупреждения' : 'Warning',
+                    data: warningData,
+                    backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                    borderColor: 'rgba(245, 158, 11, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: currentLang === 'ru' ? 'Информация' : 'Info',
+                    data: infoData,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                        font: {
+                            size: 12
+                        },
+                        usePointStyle: true,
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value} ${currentLang === 'ru' ? 'тревог' : 'alarms'}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    stacked: false,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'),
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                y: {
+                    stacked: false,
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(128, 128, 128, 0.1)'
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'),
+                        font: {
+                            size: 11
+                        },
+                        stepSize: 5
+                    }
+                }
+            }
+        }
+    });
 }
 
 
