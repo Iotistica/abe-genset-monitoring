@@ -343,7 +343,7 @@ function renderUnitsConfig() {
                     <span class="config-value">${unit.runningHours} ${currentLang === 'en' ? 'hrs' : 'ч'}</span>
                 </div>
                 <div class="config-detail">
-                    <span class="config-label">${currentLang === 'en' ? 'Active Alarms' : 'Активные тревоги'}</span>
+                    <span class="config-label">${currentLang === 'en' ? 'Active Alarms' : 'Активные оповещения'}</span>
                     <span class="config-value">${unit.activeAlarms || 0}</span>
                 </div>
             </div>
