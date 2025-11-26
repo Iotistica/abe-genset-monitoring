@@ -332,8 +332,10 @@
             const t = translations[lang];
             
             // Update title and subtitle
-            document.querySelector('h1').textContent = t.title;
-            document.querySelector('.subtitle').textContent = t.subtitle;
+            const titleEl = document.querySelector('h1');
+            if (titleEl) titleEl.textContent = t.title;
+            const subtitleEl = document.querySelector('.subtitle');
+            if (subtitleEl) subtitleEl.textContent = t.subtitle;
             
             // Update footer text
             const footerText = document.getElementById('footer-text');

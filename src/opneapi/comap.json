@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://api.ABE.net/v1.1"
+            "url": "https://abe-genset-api.azurewebsites.net/v1.1"
         }
     ],
     "paths": {

@@ -13,7 +13,8 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5500',
-    'https://proud-sea-01855e30f.3.azurestaticapps.net'
+    'https://proud-sea-01855e30f.3.azurestaticapps.net',
+    'https://abe.iotistic.ca'
   ],
   credentials: true
 }));
